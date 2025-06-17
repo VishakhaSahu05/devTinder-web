@@ -1,37 +1,42 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
-import { Navigate, Outlet, useNavigate } from "react-router-dom";
-import { BASE_URL } from "../utils/constants";
-import { useDispatch, useSelector } from "react-redux";
-import { addUser } from "../utils/userSlice";
 import axios from "axios";
+import { Outlet, useNavigate } from "react-router-dom";
 
 const Body = () => {
-  const dispatch = useDispatch();
-  const Navigate = useNavigate();
-  const userData = useSelector((store) => store.user);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
   const fetchUser = async () => {
-    if (userData) return;
     try {
-      const res = await axios.get(BASE_URL + "/profile/view", {
-        withCredentials: true,
-      });
-      dispatch(addUser(res.data));
-    } catch (err) {
-      if (err.status === 401) {
-        Navigate("/login");
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+        return;
       }
 
-      console.error(err);
+      const res = await axios.get("http://localhost:5000/profile/view", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true, // if you're also using cookies (optional)
+      });
+
+      setUser(res.data.user); // adjust based on backend response
+    } catch (err) {
+      console.error("Error fetching user:", err);
+      navigate("/login");
     }
   };
+
   useEffect(() => {
     fetchUser();
   }, []);
+
   return (
     <>
-      <NavBar />
+      <NavBar user={user} />
       <Outlet />
       <Footer />
     </>
