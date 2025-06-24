@@ -24,7 +24,11 @@
 - You should be able to access to other routes without login
 - if token is not present redirect user to login page
 - logout
-- profile page
+- Got the feed and the feed in the store
+- build the userCard on feed in the store
+- Edit profile feature
+- Show toast Message on save profile
+- See all my connections
 
 
 - Body
