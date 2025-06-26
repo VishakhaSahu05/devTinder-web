@@ -29,6 +29,10 @@
 - Edit profile feature
 - Show toast Message on save profile
 - See all my connections
+- New Page See all my connections
+- New Page - See all my Conenction REquest
+- Feature Accept/Reject Connection Request
+- You, now Uncommitted changes
 
 
 - Body
