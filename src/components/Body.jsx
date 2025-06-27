@@ -3,6 +3,7 @@ import NavBar from "./NavBar";
 import Footer from "./Footer";
 import axios from "axios";
 import { Outlet, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../utils/constants";
 
 const Body = () => {
   const [user, setUser] = useState(null);
@@ -16,7 +17,7 @@ const Body = () => {
         return;
       }
 
-      const res = await axios.get("http://localhost:5000/profile/view", {
+      const res = await axios.get(BASE_URL+"/profile/view", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
