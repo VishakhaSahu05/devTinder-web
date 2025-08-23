@@ -24,7 +24,12 @@ const AuthForm = () => {
       const res = await axios.post(
         `${BASE_URL}/auth/login`,
         { emailId, password },
-        { withCredentials: true }
+        {
+          withCredentials: true, 
+          headers: {
+            "Content-Type": "application/json", 
+          },
+        }
       );
       dispatch(addUser(res.data.user));
       navigate("/"); // Go to home after login
@@ -39,10 +44,15 @@ const AuthForm = () => {
       const res = await axios.post(
         `${BASE_URL}/auth/signup`,
         { firstName, LastName, emailId, password, age, gender },
-        { withCredentials: true }
+        {
+          withCredentials: true, 
+          headers: {
+            "Content-Type": "application/json", 
+          },
+        }
       );
       dispatch(addUser(res.data.user));
-      navigate("/profile"); // Go to profile after signup
+      navigate("/profile"); 
     } catch (err) {
       setError(err?.response?.data || "Something went wrong");
     }

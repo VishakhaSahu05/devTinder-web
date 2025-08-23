@@ -41,3 +41,5 @@
   Route=/login => login
   Route=/connections => connections
   Route=/profile => Profile
+
+  # RealTime Chat using WebSocket(socket.io)
