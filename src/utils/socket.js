@@ -6,13 +6,13 @@ let socketInstance = null;
 export const createSocketConnection = () => {
   if (!socketInstance) {
     if (location.hostname === "localhost") {
+      // Local development
       socketInstance = io(BASE_URL, {
-        // transports: ["websocket"], // optional, remove if issues
         withCredentials: true,
       });
     } else {
-      socketInstance = io("/", {
-        path: "/api/socket.io",
+      // Production on EC2
+      socketInstance = io("http://13.53.142.211:5000", {
         withCredentials: true,
       });
     }
