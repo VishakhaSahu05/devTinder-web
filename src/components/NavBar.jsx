@@ -60,7 +60,7 @@ const NavBar = () => {
 
           {/* Dropdown menu */}
           {dropdownOpen && (
-            <ul className="absolute right-0 mt-3 w-52 bg-base-100 rounded-box shadow-lg z-50 p-2 menu menu-sm">
+            <ul className="absolute top-full right-0 mt-2 w-52 bg-base-100 rounded-box shadow-lg z-50 p-2 menu menu-sm">
               <li>
                 <Link to="/profile" className="justify-between" onClick={() => setDropdownOpen(false)}>
                   Profile <span className="badge">New</span>

@@ -2,6 +2,9 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { io } from "socket.io-client";
+import axios from "axios";
+import { BASE_URL } from "../utils/constants";
+
 
 const Chat = () => {
   const { targetUserId } = useParams();
@@ -12,20 +15,41 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
 
   // Use a ref to hold the socket instance.
-  // This prevents it from being recreated on every render.
   const socketRef = useRef(null);
+  const fetchChatMessages = async () => {
+  const chat = await axios.get(`${BASE_URL}/chat/${targetUserId}`, {
+    withCredentials: true,
+  });
 
+  console.log(chat.data.messages);
+
+  const chatMessages = chat?.data?.messages.map((msg) => {
+    return {
+      senderId: msg?.senderId?._id,
+      firstName: msg?.senderId?.firstName,
+      lastName: msg?.senderId?.LastName,
+      text: msg?.text,
+      time: new Date(msg?.createdAt).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
+  });
+
+  setMessages(chatMessages);
+}; // <-- closes fetchChatMessages properly
+useEffect(() => {
+  if (userId && targetUserId) {
+    fetchChatMessages();
+  }
+}, [userId, targetUserId]);
   useEffect(() => {
-    // Return early if we don't have the necessary data
     if (!userId || !targetUserId) return;
 
-    // Only create a new socket if one doesn't exist
     if (!socketRef.current) {
-      // You should replace this URL with the actual URL of your socket.io server
-      const newSocket = io("http://localhost:5000"); // Or whatever your backend server URL is
+      const newSocket = io("http://localhost:5000");
       socketRef.current = newSocket;
 
-      // Add connection listeners for debugging
       newSocket.on("connect", () => {
         console.log("Socket connected:", newSocket.id);
       });
@@ -45,14 +69,12 @@ const Chat = () => {
     socket.emit("joinChat", { userId, targetUserId });
 
     const handleReceiveMessage = (message) => {
-      console.log("Received a message on client:", message); // <--- Yeh log daalo
-      // Use a functional update to ensure we have the latest state
+      console.log("Received a message on client:", message);
       setMessages((prevMessages) => [...prevMessages, message]);
     };
 
     socket.on("receiveMessage", handleReceiveMessage);
 
-    // Cleanup function
     return () => {
       socket.off("receiveMessage", handleReceiveMessage);
     };
@@ -72,9 +94,6 @@ const Chat = () => {
         minute: "2-digit",
       }),
     };
-
-    // Optimistic UI update
-    setMessages((prevMessages) => [...prevMessages, messageData]);
 
     socket.emit("sendMessage", messageData);
 

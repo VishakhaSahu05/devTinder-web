@@ -43,3 +43,15 @@
   Route=/profile => Profile
 
   # RealTime Chat using WebSocket(socket.io)
+    - Build the UI for chat window on /chat/:targetUserId
+    - SetUp socket.io in backend
+    - npm i socket.io
+    - SetUp frontend socket.io-client
+    - Initialize the chat
+    - createSocketConnection
+    - Listen to events
+    - HomeWork: Improve the UI
+    - HomeWork: Fix Security Bug - auth in web Sockets
+    - HomeWork: Fix bug - if I'm not friend , then I should not be able to send message
+    - Project ideas: Tic Tac
+    - Project idea 2 : Chess

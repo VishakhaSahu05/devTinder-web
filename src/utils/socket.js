@@ -1,19 +1,34 @@
 import { io } from "socket.io-client";
 import { BASE_URL } from "./constants";
 
+let socketInstance = null;
+
 export const createSocketConnection = () => {
-  const socket = io(BASE_URL, {
-    transports: ["websocket"], // force WebSocket
-    withCredentials: true,
-  });
+  if (!socketInstance) {
+    if (location.hostname === "localhost") {
+      socketInstance = io(BASE_URL, {
+        // transports: ["websocket"], // optional, remove if issues
+        withCredentials: true,
+      });
+    } else {
+      socketInstance = io("/", {
+        path: "/api/socket.io",
+        withCredentials: true,
+      });
+    }
 
-  socket.on("connect", () => {
-    console.log("✅ Connected to socket.io:", socket.id);
-  });
+    socketInstance.on("connect", () => {
+      console.log("Connected to socket.io:", socketInstance.id);
+    });
 
-  socket.on("connect_error", (err) => {
-    console.error("❌ Socket connection error:", err.message);
-  });
+    socketInstance.on("disconnect", (reason) => {
+      console.log("Socket disconnected:", reason);
+    });
 
-  return socket;
+    socketInstance.on("connect_error", (err) => {
+      console.error("Socket connection error:", err.message);
+    });
+  }
+
+  return socketInstance;
 };
