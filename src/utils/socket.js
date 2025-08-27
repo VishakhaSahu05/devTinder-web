@@ -12,7 +12,7 @@ export const createSocketConnection = () => {
       });
     } else {
       // Production on EC2
-      socketInstance = io("http://13.53.142.211:5000", {
+      socketInstance = io("/api/socket.io", {
         withCredentials: true,
       });
     }
