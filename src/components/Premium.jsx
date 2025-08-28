@@ -8,7 +8,7 @@ const Premium = () => {
   // Verify premium status from backend
   const verifyPremiumUser = async () => {
     try {
-      const res = await axios.get(BASE_URL + "/payment/verify", {
+      const res = await axios.get(BASE_URL + "/payment/premium/verify", {
         withCredentials: true,
       });
       if (res.data.isPremium) {

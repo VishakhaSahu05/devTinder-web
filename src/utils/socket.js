@@ -1,17 +1,18 @@
 import { io } from "socket.io-client";
-import { BASE_URL } from "./constants";
 
 let socketInstance = null;
 
 export const createSocketConnection = () => {
   if (!socketInstance) {
-   
-    
-      // Production on EC2
-      socketInstance = io("/api/socket.io", {
-        withCredentials: true,
-      });
-  
+    const SOCKET_URL =
+      window.location.hostname === "localhost"
+        ? "http://localhost:5000"
+        : window.location.origin; // production domain
+
+    socketInstance = io(SOCKET_URL, {
+      withCredentials: true,
+      path: "/socket.io", // default path
+    });
 
     socketInstance.on("connect", () => {
       console.log("Connected to socket.io:", socketInstance.id);
