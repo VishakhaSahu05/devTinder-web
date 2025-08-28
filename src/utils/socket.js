@@ -5,17 +5,13 @@ let socketInstance = null;
 
 export const createSocketConnection = () => {
   if (!socketInstance) {
-    if (location.hostname === "localhost") {
-      // Local development
-      socketInstance = io(BASE_URL, {
-        withCredentials: true,
-      });
-    } else {
+   
+    
       // Production on EC2
       socketInstance = io("/api/socket.io", {
         withCredentials: true,
       });
-    }
+  
 
     socketInstance.on("connect", () => {
       console.log("Connected to socket.io:", socketInstance.id);
