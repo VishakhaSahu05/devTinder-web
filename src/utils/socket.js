@@ -7,7 +7,7 @@ export const createSocketConnection = () => {
     const SOCKET_URL =
       window.location.hostname === "localhost"
         ? "http://localhost:5000"
-        : window.location.origin; // production domain
+        : "http://13.53.142.211:5000"; // production domain
 
     socketInstance = io(SOCKET_URL, {
       withCredentials: true,

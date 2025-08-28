@@ -5,7 +5,6 @@ import { io } from "socket.io-client";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 
-
 const Chat = () => {
   const { targetUserId } = useParams();
   const user = useSelector((store) => store.user);
@@ -17,37 +16,42 @@ const Chat = () => {
   // Use a ref to hold the socket instance.
   const socketRef = useRef(null);
   const fetchChatMessages = async () => {
-  const chat = await axios.get(`${BASE_URL}/chat/${targetUserId}`, {
-    withCredentials: true,
-  });
+    const chat = await axios.get(`${BASE_URL}/chat/${targetUserId}`, {
+      withCredentials: true,
+    });
 
-  console.log(chat.data.messages);
+    console.log(chat.data.messages);
 
-  const chatMessages = chat?.data?.messages.map((msg) => {
-    return {
-      senderId: msg?.senderId?._id,
-      firstName: msg?.senderId?.firstName,
-      lastName: msg?.senderId?.LastName,
-      text: msg?.text,
-      time: new Date(msg?.createdAt).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    };
-  });
+    const chatMessages = chat?.data?.messages.map((msg) => {
+      return {
+        senderId: msg?.senderId?._id,
+        firstName: msg?.senderId?.firstName,
+        lastName: msg?.senderId?.LastName,
+        text: msg?.text,
+        time: new Date(msg?.createdAt).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      };
+    });
 
-  setMessages(chatMessages);
-}; // <-- closes fetchChatMessages properly
-useEffect(() => {
-  if (userId && targetUserId) {
-    fetchChatMessages();
-  }
-}, [userId, targetUserId]);
+    setMessages(chatMessages);
+  }; // <-- closes fetchChatMessages properly
+  useEffect(() => {
+    if (userId && targetUserId) {
+      fetchChatMessages();
+    }
+  }, [userId, targetUserId]);
   useEffect(() => {
     if (!userId || !targetUserId) return;
-
+    const SOCKET_URL =
+      window.location.hostname === "localhost"
+        ? "http://localhost:5000"
+        : "http://13.53.142.211:5000";
     if (!socketRef.current) {
-      const newSocket = io("http://localhost:5000");
+      const newSocket = io(SOCKET_URL, {
+        withCredentials: true,
+      });
       socketRef.current = newSocket;
 
       newSocket.on("connect", () => {
@@ -108,7 +112,9 @@ useEffect(() => {
         {messages.map((msg, index) => (
           <div
             key={index}
-            className={`chat ${msg.senderId === userId ? "chat-end" : "chat-start"}`}
+            className={`chat ${
+              msg.senderId === userId ? "chat-end" : "chat-start"
+            }`}
           >
             <div className="chat-bubble">
               <div className="font-semibold">{msg.firstName}</div>
